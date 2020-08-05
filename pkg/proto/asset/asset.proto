@@ -11,6 +11,7 @@ message AssetReference {
   // URI associated with this asset
   string uri = 1;
 
-  // Qualifies associated with this asset
+  // Qualifies associated with this asset, sorted lexicographically
+  // by key. Ties should be broken by lexicographical sort on values.
   repeated build.bazel.remote.asset.v1.Qualifier qualifiers = 2;
 }
