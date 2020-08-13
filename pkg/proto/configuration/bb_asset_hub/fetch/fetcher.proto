@@ -10,7 +10,7 @@ option go_package = "github.com/buildbarn/bb-asset-hub/pkg/proto/configuration/b
 message FetcherConfiguration {
   oneof backend {
     // Reads and writes to the AssetStore to return cached responses
-    CachingFetcherConfiguration caching = 1;
+    FetcherConfiguration caching = 1;
 
     // Downloads blobs over HTTP and place them into a CAS for retrieval over
     // REv2 ReadBlobs requests.
@@ -22,11 +22,6 @@ message FetcherConfiguration {
     // Note that in jsonnet configuration, 'error' will need to be in quotes to
     // avoid collision with a protected keyword
     google.rpc.Status error = 3;
-  }
-
-  message CachingFetcherConfiguration {
-    // Fetcher to wrap and cache results from
-    FetcherConfiguration fetcher = 1;
   }
 
   message HttpFetcherConfiguration {

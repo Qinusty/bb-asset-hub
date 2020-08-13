@@ -24,7 +24,9 @@ func NewFetcherFromConfiguration(configuration *pb.FetcherConfiguration,
 	var fetcher remoteasset.FetchServer
 	switch backend := configuration.Backend.(type) {
 	case *pb.FetcherConfiguration_Caching:
-		innerFetcher, err := NewFetcherFromConfiguration(backend.Caching.Fetcher, assetStore, casBlobAccessCreator)
+		innerFetcher, err := NewFetcherFromConfiguration(
+			backend.Caching, assetStore,
+			casBlobAccessCreator)
 		if err != nil {
 			return nil, err
 		}
