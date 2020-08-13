@@ -71,7 +71,7 @@ func main() {
 		allowUpdatesForInstances[instanceName] = true
 	}
 
-	fetchServer, err := configuration.NewFetcherFromConfiguration(config.Fetcher, assetStore, casBlobAccessCreator)
+	fetchServer, err := configuration.NewFetcherFromConfiguration(config.Fetcher, assetStore, casBlobAccessCreator, int(config.MaximumMessageSizeBytes))
 	if err != nil {
 		log.Fatal("Failed to initialize fetch server from configuration: ", err)
 	}

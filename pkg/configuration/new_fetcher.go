@@ -20,13 +20,13 @@ import (
 // a jsonnet configuration.
 func NewFetcherFromConfiguration(configuration *pb.FetcherConfiguration,
 	assetStore *storage.AssetStore,
-	casBlobAccessCreator blobstore_configuration.BlobAccessCreator) (remoteasset.FetchServer, error) {
+	casBlobAccessCreator blobstore_configuration.BlobAccessCreator, maximumMessageSizeBytes int) (remoteasset.FetchServer, error) {
 	var fetcher remoteasset.FetchServer
 	switch backend := configuration.Backend.(type) {
 	case *pb.FetcherConfiguration_Caching:
 		innerFetcher, err := NewFetcherFromConfiguration(
 			backend.Caching, assetStore,
-			casBlobAccessCreator)
+			casBlobAccessCreator, maximumMessageSizeBytes)
 		if err != nil {
 			return nil, err
 		}
@@ -55,6 +55,20 @@ func NewFetcherFromConfiguration(configuration *pb.FetcherConfiguration,
 			allowUpdatesForInstances)
 	case *pb.FetcherConfiguration_Error:
 		fetcher = fetch.NewErrorFetcher(backend.Error)
+	case *pb.FetcherConfiguration_CompletenessChecking:
+		cas, err := blobstore_configuration.NewBlobAccessFromConfiguration(
+			backend.CompletenessChecking.ContentAddressableStorage,
+			casBlobAccessCreator)
+		innerFetcher, err := NewFetcherFromConfiguration(
+			backend.CompletenessChecking.Fetcher, assetStore,
+			casBlobAccessCreator, maximumMessageSizeBytes)
+		if err != nil {
+			return nil, err
+		}
+		fetcher = fetch.NewCompletenessCheckingFetcher(
+			innerFetcher, cas,
+			int(backend.CompletenessChecking.BatchSize), maximumMessageSizeBytes)
+
 	default:
 		return nil, status.Errorf(codes.InvalidArgument, "Fetcher configuration is invalid as no supported Fetchers are defined.")
 	}

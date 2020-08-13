@@ -22,6 +22,10 @@ message FetcherConfiguration {
     // Note that in jsonnet configuration, 'error' will need to be in quotes to
     // avoid collision with a protected keyword
     google.rpc.Status error = 3;
+
+    // Ensures consistency between digests in remote asset responses and
+    // the contents of the associated CAS.
+    CompletenessCheckingFetcherConfiguration completeness_checking = 4;
   }
 
   message HttpFetcherConfiguration {
@@ -31,5 +35,14 @@ message FetcherConfiguration {
 
     // List of instances which can trigger an upload to the CAS
     repeated string allow_updates_for_instances = 2;
+  }
+
+  message CompletenessCheckingFetcherConfiguration {
+    FetcherConfiguration fetcher = 1;
+    // Configuration for blob storage.
+    buildbarn.configuration.blobstore.BlobAccessConfiguration
+        content_addressable_storage = 2;
+
+    uint32 batch_size = 3;
   }
 }
