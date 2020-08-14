@@ -1,4 +1,4 @@
-load("@com_github_buildbarn_bb_storage//tools:container.bzl", "container_push_official")
+load(":container.bzl", "container_push_qinusty")
 load("@io_bazel_rules_docker//go:image.bzl", "go_image")
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 
@@ -38,7 +38,7 @@ go_image(
     visibility = ["//visibility:public"],
 )
 
-container_push_official(
+container_push_qinusty(
     name = "bb_asset_hub_container_push",
     component = "bb-asset-hub",
     image = ":bb_asset_hub_container",
