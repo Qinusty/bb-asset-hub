@@ -35,6 +35,9 @@ func NewCompletenessCheckingFetcher(fetcher remoteasset.FetchServer, contentAddr
 
 func (cf *completenessCheckingFetcher) FetchBlob(ctx context.Context, req *remoteasset.FetchBlobRequest) (*remoteasset.FetchBlobResponse, error) {
 	response, err := cf.fetcher.FetchBlob(ctx, req)
+	if err != nil {
+		return nil, err
+	}
 	instanceName, err := bb_digest.NewInstanceName(req.InstanceName)
 	findMissingQueue := completenesschecking.NewFindMissingQueue(ctx, instanceName, cf.contentAddressableStorage, cf.batchSize)
 
@@ -52,8 +55,14 @@ func (cf *completenessCheckingFetcher) FetchBlob(ctx context.Context, req *remot
 
 func (cf *completenessCheckingFetcher) FetchDirectory(ctx context.Context, req *remoteasset.FetchDirectoryRequest) (*remoteasset.FetchDirectoryResponse, error) {
 	response, err := cf.fetcher.FetchDirectory(ctx, req)
+	if err != nil {
+		return nil, err
+	}
 
 	instanceName, err := bb_digest.NewInstanceName(req.InstanceName)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := cf.checkDirectoryCompleteness(ctx, instanceName, response.RootDirectoryDigest); err != nil {
 		// TODO: Handle failed completeness?
