@@ -4,12 +4,12 @@ def go_dependencies():
     go_repository(
         name = "com_github_buildbarn_bb_storage",
         importpath = "github.com/buildbarn/bb-storage",
-        sum = "h1:XkZNtqFiqfDzn2SYfObEKeGs5JqOIcMniOu/mIXyFYY=",
-        version = "v0.0.0-20200802055539-f0281e269c07",
         # Temporary patch until patch lands upstream
         patches = [
             "//:patches/com_github_buildbarn_bb_storage/expose_find_missing_queue.diff",
         ],
+        sum = "h1:XkZNtqFiqfDzn2SYfObEKeGs5JqOIcMniOu/mIXyFYY=",
+        version = "v0.0.0-20200802055539-f0281e269c07",
     )
     go_repository(
         name = "com_github_bazelbuild_remote_apis",

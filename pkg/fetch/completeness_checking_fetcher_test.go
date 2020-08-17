@@ -6,9 +6,9 @@ import (
 
 	"github.com/buildbarn/bb-asset-hub/internal/mock"
 	"github.com/buildbarn/bb-asset-hub/pkg/fetch"
+	"github.com/buildbarn/bb-storage/pkg/blobstore/buffer"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	bb_digest "github.com/buildbarn/bb-storage/pkg/digest"
-	"github.com/buildbarn/bb-storage/pkg/blobstore/buffer"
 
 	remoteasset "github.com/bazelbuild/remote-apis/build/bazel/remote/asset/v1"
 	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"

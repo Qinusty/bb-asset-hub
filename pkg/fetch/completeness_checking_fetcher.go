@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
-	bb_digest "github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/blobstore/completenesschecking"
+	bb_digest "github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/util"
 
 	remoteasset "github.com/bazelbuild/remote-apis/build/bazel/remote/asset/v1"
@@ -24,12 +24,12 @@ type completenessCheckingFetcher struct {
 // NewErrorFetcher creates a Remote Asset API Fetch service which simply returns a
 // set gRPC status
 func NewCompletenessCheckingFetcher(fetcher remoteasset.FetchServer, contentAddressableStorage blobstore.BlobAccess,
-									batchSize int, maximumMessageSizeBytes int) remoteasset.FetchServer {
+	batchSize int, maximumMessageSizeBytes int) remoteasset.FetchServer {
 	return &completenessCheckingFetcher{
-		fetcher:   					   fetcher,
-		contentAddressableStorage: 	   contentAddressableStorage,
-		batchSize: 					   batchSize,
-		maximumMessageSizeBytes: 	   maximumMessageSizeBytes,
+		fetcher:                   fetcher,
+		contentAddressableStorage: contentAddressableStorage,
+		batchSize:                 batchSize,
+		maximumMessageSizeBytes:   maximumMessageSizeBytes,
 	}
 }
 
@@ -77,7 +77,7 @@ func (cf *completenessCheckingFetcher) FetchDirectory(ctx context.Context, req *
 // directory (remoteexecution.Tree objects)
 // referenced by the ActionResult.
 func (cf *completenessCheckingFetcher) checkDirectoryCompleteness(ctx context.Context, instanceName bb_digest.InstanceName,
-																  rootDigest *remoteexecution.Digest) error {
+	rootDigest *remoteexecution.Digest) error {
 	findMissingQueue := completenesschecking.NewFindMissingQueue(ctx, instanceName, cf.contentAddressableStorage, cf.batchSize)
 
 	treeDigest, err := findMissingQueue.DeriveDigest(rootDigest)

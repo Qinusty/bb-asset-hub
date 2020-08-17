@@ -33,9 +33,9 @@ go_test(
     name = "go_default_test",
     srcs = [
         "caching_fetcher_test.go",
+        "completeness_checking_fetcher_test.go",
         "http_fetcher_test.go",
         "validating_fetcher_test.go",
-        "completeness_checking_fetcher_test.go",
     ],
     embed = [":go_default_library"],
     deps = [
