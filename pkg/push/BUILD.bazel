@@ -2,7 +2,10 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "go_default_library",
-    srcs = ["push_server.go"],
+    srcs = [
+        "logging_pusher.go",
+        "push_server.go",
+    ],
     importpath = "github.com/buildbarn/bb-asset-hub/pkg/push",
     visibility = ["//visibility:public"],
     deps = [
