@@ -76,9 +76,9 @@ func main() {
 		log.Fatal("Failed to initialize fetch server from configuration: ", err)
 	}
 
-	pushServer := push.NewAssetPushServer(
+	pushServer := push.NewLoggingPusher(push.NewAssetPushServer(
 		assetStore,
-		allowUpdatesForInstances)
+		allowUpdatesForInstances))
 
 	// Spawn gRPC servers for client and worker traffic.
 	go func() {
