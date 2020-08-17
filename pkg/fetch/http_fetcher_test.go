@@ -84,8 +84,9 @@ func TestHTTPFetcherFetchBlob(t *testing.T) {
 			StatusCode: 404,
 		}, nil).MaxTimes(2)
 
-		_, err := HTTPFetcher.FetchBlob(ctx, request)
+		response, err := HTTPFetcher.FetchBlob(ctx, request)
 		require.NotNil(t, err)
+		require.Nil(t, response)
 		require.Equal(t, status.Code(err), codes.NotFound)
 	})
 }
@@ -105,7 +106,8 @@ func TestHTTPFetcherFetchDirectory(t *testing.T) {
 	httpClient := mock.NewMockHTTPClient(ctrl)
 	allowUpdatesForInstances := map[bb_digest.InstanceName]bool{instanceName: true}
 	HTTPFetcher := fetch.NewHTTPFetcher(httpClient, casBlobAccess, allowUpdatesForInstances)
-	_, err = HTTPFetcher.FetchDirectory(ctx, request)
+	response, err := HTTPFetcher.FetchDirectory(ctx, request)
 	require.NotNil(t, err)
+	require.Nil(t, response)
 	require.Equal(t, status.Code(err), codes.PermissionDenied)
 }

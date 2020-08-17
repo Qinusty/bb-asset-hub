@@ -44,8 +44,9 @@ func TestFetchBlobUriRequirement(t *testing.T) {
 	})
 
 	t.Run("Failure", func(t *testing.T) {
-		_, err := validatingFetcher.FetchBlob(ctx, badRequest)
+		response, err := validatingFetcher.FetchBlob(ctx, badRequest)
 		require.NotNil(t, err)
+		require.Nil(t, response)
 		require.Equal(t, status.Code(err), codes.InvalidArgument)
 	})
 }
@@ -78,8 +79,9 @@ func TestFetchDirectoryUriRequirement(t *testing.T) {
 	})
 
 	t.Run("Failure", func(t *testing.T) {
-		_, err := validatingFetcher.FetchDirectory(ctx, badRequest)
+		response, err := validatingFetcher.FetchDirectory(ctx, badRequest)
 		require.NotNil(t, err)
+		require.Nil(t, response)
 		require.Equal(t, status.Code(err), codes.InvalidArgument)
 	})
 }

@@ -5,8 +5,6 @@ import (
 	"testing"
 	"time"
 
-	remoteasset "github.com/bazelbuild/remote-apis/build/bazel/remote/asset/v1"
-	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
 	"github.com/buildbarn/bb-asset-hub/internal/mock"
 	"github.com/buildbarn/bb-asset-hub/pkg/fetch"
 	"github.com/buildbarn/bb-asset-hub/pkg/proto/asset"
@@ -14,6 +12,11 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/blobstore/buffer"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	bb_digest "github.com/buildbarn/bb-storage/pkg/digest"
+
+	remoteasset "github.com/bazelbuild/remote-apis/build/bazel/remote/asset/v1"
+	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
+
+
 	"github.com/golang/mock/gomock"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
@@ -121,7 +124,8 @@ func TestFetchDirectoryCaching(t *testing.T) {
 	t.Run("Failure", func(t *testing.T) {
 		backendGetCall := backend.EXPECT().Get(ctx, gomock.Any()).Return(buffer.NewBufferFromError(status.Error(codes.NotFound, "Directory not found")))
 		mockFetcher.EXPECT().FetchDirectory(ctx, request).Return(nil, status.Error(codes.NotFound, "Not Found!")).After(backendGetCall)
-		_, err := cachingFetcher.FetchDirectory(ctx, request)
+		response, err := cachingFetcher.FetchDirectory(ctx, request)
+		require.Nil(t, response)
 		require.NotNil(t, err)
 	})
 
@@ -164,7 +168,8 @@ func TestCachingFetcherExpiry(t *testing.T) {
 	})
 	cacheFetcher := fetch.NewCachingFetcher(baseFetcher, assetStore)
 
-	_, err = cacheFetcher.FetchBlob(ctx, request)
+	response, err := cacheFetcher.FetchBlob(ctx, request)
+	require.Nil(t, response)
 	require.Equal(t, status.ErrorProto(&protostatus.Status{Code: 5, Message: "Not found"}), err)
 }
 
@@ -201,6 +206,7 @@ func TestCachingFetcherOldestContentAccepted(t *testing.T) {
 	})
 	cacheFetcher := fetch.NewCachingFetcher(baseFetcher, assetStore)
 
-	_, err = cacheFetcher.FetchBlob(ctx, request)
+	response, err := cacheFetcher.FetchBlob(ctx, request)
+	require.Nil(t, response)
 	require.Equal(t, status.ErrorProto(&protostatus.Status{Code: 5, Message: "Not found"}), err)
 }
