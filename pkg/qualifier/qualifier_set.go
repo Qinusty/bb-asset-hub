@@ -1,7 +1,12 @@
 package qualifier
 
 import (
+	"fmt"
+
 	remoteasset "github.com/bazelbuild/remote-apis/build/bazel/remote/asset/v1"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var exists = struct{}{}
@@ -52,4 +57,27 @@ func QualifiersToSet(qualifiers []*remoteasset.Qualifier) Set {
 		s.Add(q.Name)
 	}
 	return s
+}
+
+// UnsupportedSetToError converts a set of qualifier names into an RPC error with
+// details of each unsupported error.
+func UnsupportedSetToError(s Set) error {
+	if s.IsEmpty() {
+		return nil
+	}
+	violations := []*errdetails.BadRequest_FieldViolation{}
+	for q := range s {
+		violations = append(violations, &errdetails.BadRequest_FieldViolation{
+			Field:       "qualifiers.name",
+			Description: fmt.Sprintf("\"%s\" not supported", q),
+		})
+	}
+	ret, err := status.New(codes.InvalidArgument, "Unsupported Qualifier(s) found in request.").WithDetails(
+		&errdetails.BadRequest{
+			FieldViolations: violations,
+		})
+	if err != nil {
+		return err
+	}
+	return ret.Err()
 }

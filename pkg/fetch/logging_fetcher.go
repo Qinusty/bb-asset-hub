@@ -42,6 +42,6 @@ func (lf *loggingFetcher) FetchDirectory(ctx context.Context, req *remoteasset.F
 	return resp, err
 }
 
-func (lf *loggingFetcher) CheckQualifiers(qualifiers qualifier.Set) qualifier.Set {
+func (lf *loggingFetcher) CheckQualifiers(qualifiers qualifier.Set) error {
 	return lf.fetcher.CheckQualifiers(qualifiers)
 }

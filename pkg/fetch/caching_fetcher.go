@@ -164,7 +164,7 @@ func (cf *cachingFetcher) FetchDirectory(ctx context.Context, req *remoteasset.F
 	return response, nil
 }
 
-func (cf *cachingFetcher) CheckQualifiers(qualifiers qualifier.Set) qualifier.Set {
+func (cf *cachingFetcher) CheckQualifiers(qualifiers qualifier.Set) error {
 	return cf.fetcher.CheckQualifiers(qualifiers)
 }
 

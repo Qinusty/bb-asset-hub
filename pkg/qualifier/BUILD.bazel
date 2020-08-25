@@ -7,5 +7,8 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "@com_github_bazelbuild_remote_apis//build/bazel/remote/asset/v1:go_default_library",
+        "@go_googleapis//google/rpc:errdetails_go_proto",
+        "@org_golang_google_grpc//codes:go_default_library",
+        "@org_golang_google_grpc//status:go_default_library",
     ],
 )

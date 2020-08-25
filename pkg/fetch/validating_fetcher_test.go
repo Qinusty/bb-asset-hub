@@ -34,7 +34,7 @@ func TestFetchBlobUriRequirement(t *testing.T) {
 	validatingFetcher := fetch.NewValidatingFetcher(mockFetcher)
 
 	t.Run("Success", func(t *testing.T) {
-		mockFetcher.EXPECT().CheckQualifiers(qualifier.Set{}).Return(qualifier.Set{})
+		mockFetcher.EXPECT().CheckQualifiers(qualifier.Set{}).Return(nil)
 		mockFetcher.EXPECT().FetchBlob(ctx, request).Return(&remoteasset.FetchBlobResponse{
 			Status:     status.New(codes.OK, "Success!").Proto(),
 			Uri:        uri,
@@ -69,7 +69,7 @@ func TestFetchDirectoryUriRequirement(t *testing.T) {
 	validatingFetcher := fetch.NewValidatingFetcher(mockFetcher)
 
 	t.Run("Success", func(t *testing.T) {
-		mockFetcher.EXPECT().CheckQualifiers(qualifier.Set{}).Return(qualifier.Set{})
+		mockFetcher.EXPECT().CheckQualifiers(qualifier.Set{}).Return(nil)
 		mockFetcher.EXPECT().FetchDirectory(ctx, request).Return(&remoteasset.FetchDirectoryResponse{
 			Status:              status.New(codes.OK, "Success!").Proto(),
 			Uri:                 uri,
@@ -106,7 +106,7 @@ func TestFetchBlobUnsupportedQualifier(t *testing.T) {
 	validatingFetcher := fetch.NewValidatingFetcher(mockFetcher)
 
 	t.Run("Success", func(t *testing.T) {
-		mockFetcher.EXPECT().CheckQualifiers(qualifier.NewSet([]string{"foo"})).Return(qualifier.Set{})
+		mockFetcher.EXPECT().CheckQualifiers(qualifier.NewSet([]string{"foo"})).Return(nil)
 		mockFetcher.EXPECT().FetchBlob(ctx, request).Return(&remoteasset.FetchBlobResponse{
 			Status:     status.New(codes.OK, "Success!").Proto(),
 			Uri:        uri,
@@ -118,7 +118,7 @@ func TestFetchBlobUnsupportedQualifier(t *testing.T) {
 	})
 
 	t.Run("Failure", func(t *testing.T) {
-		mockFetcher.EXPECT().CheckQualifiers(qualifier.NewSet([]string{"foo"})).Return(qualifier.NewSet([]string{"foo"}))
+		mockFetcher.EXPECT().CheckQualifiers(qualifier.NewSet([]string{"foo"})).Return(qualifier.UnsupportedSetToError(qualifier.NewSet([]string{"foo"})))
 		response, err := validatingFetcher.FetchBlob(ctx, request)
 		require.Nil(t, response)
 		require.Equal(t, status.Code(err), codes.InvalidArgument)
@@ -144,7 +144,7 @@ func TestFetchDirectoryUnsupportedQualifier(t *testing.T) {
 	validatingFetcher := fetch.NewValidatingFetcher(mockFetcher)
 
 	t.Run("Success", func(t *testing.T) {
-		mockFetcher.EXPECT().CheckQualifiers(qualifier.NewSet([]string{"foo"})).Return(qualifier.Set{})
+		mockFetcher.EXPECT().CheckQualifiers(qualifier.NewSet([]string{"foo"})).Return(nil)
 		mockFetcher.EXPECT().FetchDirectory(ctx, request).Return(&remoteasset.FetchDirectoryResponse{
 			Status:              status.New(codes.OK, "Success!").Proto(),
 			Uri:                 uri,
@@ -156,7 +156,7 @@ func TestFetchDirectoryUnsupportedQualifier(t *testing.T) {
 	})
 
 	t.Run("Failure", func(t *testing.T) {
-		mockFetcher.EXPECT().CheckQualifiers(qualifier.NewSet([]string{"foo"})).Return(qualifier.NewSet([]string{"foo"}))
+		mockFetcher.EXPECT().CheckQualifiers(qualifier.NewSet([]string{"foo"})).Return(qualifier.UnsupportedSetToError(qualifier.NewSet([]string{"foo"})))
 		response, err := validatingFetcher.FetchDirectory(ctx, request)
 		require.Nil(t, response)
 		require.Equal(t, status.Code(err), codes.InvalidArgument)

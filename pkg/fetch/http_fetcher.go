@@ -83,8 +83,8 @@ func (hf *httpFetcher) FetchDirectory(ctx context.Context, req *remoteasset.Fetc
 	return nil, status.Errorf(codes.PermissionDenied, "HTTP Fetching of directories is not supported!")
 }
 
-func (hf *httpFetcher) CheckQualifiers(qualifiers qualifier.Set) qualifier.Set {
-	return qualifier.Difference(qualifiers, qualifier.NewSet([]string{"checksum.sri"}))
+func (hf *httpFetcher) CheckQualifiers(qualifiers qualifier.Set) error {
+	return qualifier.UnsupportedSetToError(qualifier.Difference(qualifiers, qualifier.NewSet([]string{"checksum.sri"})))
 }
 
 func (hf *httpFetcher) DownloadBlob(ctx context.Context, uri string, instanceName bb_digest.InstanceName, expectedDigest string) (buffer.Buffer, bb_digest.Digest) {

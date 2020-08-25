@@ -17,5 +17,5 @@ type Fetcher interface {
 	FetchDirectory(context.Context, *remoteasset.FetchDirectoryRequest) (*remoteasset.FetchDirectoryResponse, error)
 
 	// Check for unsupported Qualifiers, returning a set of the _unsupported_ qualifiers
-	CheckQualifiers(qualifier.Set) qualifier.Set
+	CheckQualifiers(qualifier.Set) error
 }

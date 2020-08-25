@@ -29,6 +29,8 @@ func (ef *errorFetcher) FetchDirectory(ctx context.Context, req *remoteasset.Fet
 	return nil, status.ErrorProto(ef.err)
 }
 
-func (ef *errorFetcher) CheckQualifiers(qualifiers qualifier.Set) qualifier.Set {
-	return qualifier.Set{}
+func (ef *errorFetcher) CheckQualifiers(qualifiers qualifier.Set) error {
+	// Error Fetchers should accept all qualifiers, given we're using them
+	// to produce a fixed error anyway.
+	return nil
 }

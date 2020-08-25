@@ -2,9 +2,6 @@ package fetch
 
 import (
 	"context"
-	"fmt"
-
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
 
 	remoteasset "github.com/bazelbuild/remote-apis/build/bazel/remote/asset/v1"
 	"github.com/buildbarn/bb-asset-hub/pkg/qualifier"
@@ -29,22 +26,8 @@ func (vf *validatingFetcher) FetchBlob(ctx context.Context, req *remoteasset.Fet
 	if len(req.Uris) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "FetchBlob does not support requests without any URIs specified.")
 	}
-	if unsupported := vf.CheckQualifiers(qualifier.QualifiersToSet(req.Qualifiers)); !(unsupported.IsEmpty()) {
-		violations := []*errdetails.BadRequest_FieldViolation{}
-		for q := range unsupported {
-			violations = append(violations, &errdetails.BadRequest_FieldViolation{
-				Field:       "qualifiers.name",
-				Description: fmt.Sprintf("\"%s\" not supported", q),
-			})
-		}
-		s, err := status.New(codes.InvalidArgument, "Unsupported Qualifier(s) found in request.").WithDetails(
-			&errdetails.BadRequest{
-				FieldViolations: violations,
-			})
-		if err != nil {
-			return nil, err
-		}
-		return nil, s.Err()
+	if unsupported := vf.CheckQualifiers(qualifier.QualifiersToSet(req.Qualifiers)); unsupported != nil {
+		return nil, unsupported
 	}
 	return vf.fetcher.FetchBlob(ctx, req)
 }
@@ -53,26 +36,12 @@ func (vf *validatingFetcher) FetchDirectory(ctx context.Context, req *remoteasse
 	if len(req.Uris) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "FetchDirectory does not support requests without any URIs specified.")
 	}
-	if unsupported := vf.CheckQualifiers(qualifier.QualifiersToSet(req.Qualifiers)); !(unsupported.IsEmpty()) {
-		violations := []*errdetails.BadRequest_FieldViolation{}
-		for q := range unsupported {
-			violations = append(violations, &errdetails.BadRequest_FieldViolation{
-				Field:       "qualifiers.name",
-				Description: fmt.Sprintf("\"%s\" not supported", q),
-			})
-		}
-		s, err := status.New(codes.InvalidArgument, "Unsupported Qualifier(s) found in request.").WithDetails(
-			&errdetails.BadRequest{
-				FieldViolations: violations,
-			})
-		if err != nil {
-			return nil, err
-		}
-		return nil, s.Err()
+	if unsupported := vf.CheckQualifiers(qualifier.QualifiersToSet(req.Qualifiers)); unsupported != nil {
+		return nil, unsupported
 	}
 	return vf.fetcher.FetchDirectory(ctx, req)
 }
 
-func (vf *validatingFetcher) CheckQualifiers(qualifiers qualifier.Set) qualifier.Set {
+func (vf *validatingFetcher) CheckQualifiers(qualifiers qualifier.Set) error {
 	return vf.fetcher.CheckQualifiers(qualifiers)
 }
