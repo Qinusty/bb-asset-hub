@@ -1,5 +1,7 @@
 # Buildbarn Asset Hub
 
+**This project is now maintained at https://github.com/buildbarn/bb-remote-asset under the buildbarn namespace.**
+
 This repository provides a service for the [remote asset](https://github.com/bazelbuild/remote-apis/blob/master/build/bazel/remote/asset/v1/remote_asset.proto) protocol.
 This protocol is used by tools such as [bazel](https://github.com/bazelbuild/bazel) /
 [buildstream](https://gitlab.com/BuildStream/buildstream) to provide a mapping
