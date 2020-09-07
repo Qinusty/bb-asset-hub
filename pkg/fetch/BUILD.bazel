@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "caching_fetcher.go",
         "error_fetcher.go",
+        "fetcher.go",
         "http_fetcher.go",
         "logging_fetcher.go",
         "validating_fetcher.go",
@@ -12,6 +13,7 @@ go_library(
     importpath = "github.com/buildbarn/bb-asset-hub/pkg/fetch",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/qualifier:go_default_library",
         "//pkg/storage:go_default_library",
         "@com_github_bazelbuild_remote_apis//build/bazel/remote/asset/v1:go_default_library",
         "@com_github_buildbarn_bb_storage//pkg/blobstore:go_default_library",
@@ -37,6 +39,7 @@ go_test(
     deps = [
         "//internal/mock:go_default_library",
         "//pkg/proto/asset:go_default_library",
+        "//pkg/qualifier:go_default_library",
         "//pkg/storage:go_default_library",
         "@com_github_bazelbuild_remote_apis//build/bazel/remote/asset/v1:go_default_library",
         "@com_github_bazelbuild_remote_apis//build/bazel/remote/execution/v2:go_default_library",
